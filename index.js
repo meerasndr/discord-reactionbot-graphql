@@ -5,8 +5,8 @@ const bot = new discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 
 bot.on("ready", async() => {
     console.log(`${bot.user.username} is online and ready!`);
-    bot.user.setStatus("online");    
-    //bot.user.setActivity("chilling")
+    bot.user.setStatus("online");
+    bot.user.setActivity("chilling")
 });
 
 bot.on("message", async message =>{
@@ -24,15 +24,8 @@ bot.on("message", async message =>{
     }
 });
 
-bot.on('guildMemberAdd', member =>{
-    //let role = member.guild.roles.find("name", "newuserjoin");
-    member.roles.add("677152627363938324");
-   //member.guild.defaultRole.setPermissions(['VIEW_CHANNEL']);
-})
-
 bot.on('messageReactionAdd', async (reaction, user) => {
-    // When we receive a reaction we check if the message is partial or not
-    //console.log(reaction._emoji.name)
+    // check if the received message is partial or not
 	if (reaction.message.partial) {
 	    // If the message was removed the fetching might result in an API error, which we need to handle
 		try {
@@ -48,7 +41,7 @@ bot.on('messageReactionAdd', async (reaction, user) => {
         console.log(reaction.message.channel);
         console.log(reaction.message.id);
         axios({
-            url:`https://mydisbot.herokuapp.com/v1/graphql`,
+            url:[YOUR_GRAPHQL_ENDPOINT],
             method: 'post',
             data: {query:
                 `mutation{
@@ -79,10 +72,7 @@ bot.on('messageReactionAdd', async (reaction, user) => {
 });
 
 bot.on('messageReactionAdd', async (reaction, user) => {
-    // When we receive a reaction we check if the message is partial or not
-    //console.log(reaction._emoji.name)
 	if (reaction.message.partial) {
-	    // If the message was removed the fetching might result in an API error, which we need to handle
 		try {
 			await reaction.message.fetch();
 		} catch (error) {
@@ -93,11 +83,10 @@ bot.on('messageReactionAdd', async (reaction, user) => {
     if(reaction._emoji.name == '✅') {
         console.log(`Author is: ${reaction.message.author.username}`)
         console.log(reaction.message.content)
-        const questionChannel = bot.channels.cache.get('678295356437692427')
+        const questionChannel = bot.channels.cache.get([Discord_channel_id])
         questionChannel.send('Question: \n' + reaction.message.content +' \n asked by user ' + reaction.message.author.username)
     }
-    
-	// We can also check if the reaction is partial or not
+
 	if (reaction.partial) {
 		try {
 			await reaction.fetch();
@@ -105,7 +94,6 @@ bot.on('messageReactionAdd', async (reaction, user) => {
 			console.log('Something went wrong when fetching the reaction: ', error);``
 		}
 	}
-	// Now the reaction is fully available and the properties will be reflected accurately:
     console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 });
 
